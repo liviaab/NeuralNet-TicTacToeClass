@@ -6,7 +6,6 @@ import pprint
 import neurolab as nl
 import numpy as np
 import pylab as pl
-from changeinput import *
 
 # create neural net with 3 inputs - input range [-0.5, 0.5]
 # 5 neuronios  para a camada escondida, 1 para a saída
@@ -44,8 +43,8 @@ tt = []
 for line in tr_targ:
     tt.append([float(line.strip())])
 
-print"Treinando a rede"
-error = net.train(ti, tt, epochs=500, show=100, goal=0.001)
+print"Treinando a rede. Goal: 0.001"
+error = net.train(ti, tt, epochs=500, show=10, goal=0.001)
 pprint.pprint(error)
 print len(error)
 #error2 = net2.train(tr_inp, tr_targ, epochs=500, show=1, goal=0.02)

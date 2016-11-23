@@ -131,5 +131,5 @@ def separate_trainvalidtn_set(entrada):
 	validtarget_file.close()
 
 
-change_ttt("Bases/tic-tac-toe.data", temparq)
+change_ttt("Bases/tic-tac-toe.data", "ttt.data")
 separate_trainvalidtn_set("ttt.data")
