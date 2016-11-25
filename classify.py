@@ -6,22 +6,27 @@ import pprint
 import neurolab as nl
 import numpy as np
 import pylab as pl
+import math
+from aux import *
+
 
 def class_ttt():
-    # create neural net with 3 inputs - input range [-0.5, 0.5]
-    # 5 neuronios  para a camada escondida, 1 para a saída
-    # 2 layers including hidden layer and output layer
+    # Algortimos de treinamento para teste:
+    # nl.trainf = nl.train.train_gdm 
+    # nl.trainf = nl.train.train_gdx
+    # nl.trainf = nl.train.train_rprop 
+    
+    # Rede neural com 9 neuronios de entrada - range [-0.5, 0.5]
+    # 9 neuronios  para a camada escondida, 1 para a saída
+    # Função de transferencia padrao: transf = TanSig
+    # testar com LogSig, SoftMax - modificar no newff
     net = nl.net.newff([[-0.5, 0.5], [-0.5, 0.5], [-0.5, 0.5],[-0.5, 0.5], [-0.5, 0.5], [-0.5, 0.5],[-0.5, 0.5], [-0.5, 0.5], [-0.5, 0.5]], [9, 1])
-    print "Neuronios entrada", net.ci
-    print "Neuronios saida", net.co
-    print "Numero camadas escondida+Saida", len(net.layers)
-    print ""
 
-
-    tr_inp = open("tr_inp.data", 'r')
-    tr_targ = open("tr_targ.data", 'r')
-    vl_inp = open("vl_inp.data", 'r')
+    tr_inp = open("ttt/tr_inp.data", 'r')       # entrada para treino
+    tr_targ = open("ttt/tr_targ.data", 'r')     # saída esperada para treino 
+    vl_inp = open("ttt/vl_inp.data", 'r')       # entrada para a validacao/generalizacao da rede
      
+    # listas <- arquivos
     ti = []
     for line in tr_inp:
         line = line.rstrip()
@@ -35,11 +40,6 @@ def class_ttt():
     for line in tr_targ:
         tt.append([float(line.strip())])
 
-    # Train networks
-    print"Treinando redes. Goal: 0.001"
-    error = net.train(ti, tt, epochs=500, show=50, goal=0.001)
-    print"Tam conj de entrada:", len(ti), "Tam conj saida",  len(error)
-
     vl = []
     for line in vl_inp:
         line = line.rstrip()
@@ -49,99 +49,49 @@ def class_ttt():
             aux.append( float(k) )
         vl.append(aux)
 
+    # Train networks
+    print"\tTreinando redes..."
+    nl.trainf = nl.train.train_gdm
+    error = net.train(ti, tt, epochs=500, show=100, goal=0.001)    
+
     # Simulate networks
-    print "Simulando RN"
+    print "\tSimulando Rede Neural"
     out = net.sim(vl)
-    print "Tamanho da entrada:", len(vl), "Tamanho da saida", len(out)
 
-    o1 = open("o1.data", 'w')
-    for i in out:
-    	o1.write(str(int(i))+"\n")
-    o1.close()
+    # o1 = open("saidas/o1.data", 'w')
+    # for i in out:
+    # 	o1.write(str(int(i))+"\n")
+    # o1.close()
+    #ploteresults(error, "Erro TTT")
+    tr_inp.close()
+    tr_targ.close()
+    vl_inp.close()
+    return error, out
 
-    # Plot results
-    pl.subplot(221)
-    pl.plot(error)
-    pl.xlabel('Epoch number')
-    pl.ylabel('error TTT (default SSE)')
-    pl.show()
+def class_car3():
+    # Modificando método de treinamento da rede - 
+    nl.trainf = nl.train.train_gdm #original
+    # nl.trainf = nl.train.train_gdx
+    # nl.trainf = nl.train.train_rprop 
+    
 
-def class_car():
-    # create neural net with 3 inputs - input range [-0.5, 0.5]
-    # 5 neuronios  para a camada escondida, 1 para a saída
-    # 2 layers including hidden layer and output layer
-    net = nl.net.newff([[0.0, 1.0], [0.0, 1.0],[0.0, 1.0], [0.0, 1.0],[0.0, 1.0], [0.0, 1.0],[-1.0, 1.0],[-1.0, 1.0],[-1.0, 1.0]], [9, 2])
-    print "Neuronios entrada", net.ci
-    print "Neuronios saida", net.co
-    print "Numero camadas escondida+Saida", len(net.layers)
-    print ""
-
-    ctr_inp = open("ctr_inp.data", 'r')
-    ctr_targ = open("ctr_targ.data", 'r')
-    cvl_inp = open("cvl_inp.data", 'r')
+    # Rede neural com 21 neuronios de entrada - range [0.0, 1.0]
+    # 21 neuronios  para a camada escondida, 4 para a saída
+    # Função de transferencia padrao: transf = TanSig
+    # testar com LogSig, SoftMax - modificar no newff
+    net = nl.net.newff([
+        [0.0, 1.0], [0.0, 1.0],[0.0, 1.0], [0.0, 1.0], 
+        [0.0, 1.0], [0.0, 1.0],[0.0, 1.0], [0.0, 1.0], 
+        [0.0, 1.0], [0.0, 1.0],[0.0, 1.0], [0.0, 1.0], 
+        [0.0, 1.0], [0.0, 1.0],[0.0, 1.0],
+        [0.0, 1.0], [0.0, 1.0],[0.0, 1.0],
+        [0.0, 1.0], [0.0, 1.0],[0.0, 1.0]], [21, 4])
+   
+    ctr_inp = open("car3/c3tr_inp.data", 'r')       # entrada treino
+    ctr_targ = open("car3/c3tr_targ.data", 'r')     # target treino
+    cvl_inp = open("car3/c3vl_inp.data", 'r')       # entrada validação
      
-    cti = []
-    for line in ctr_inp:
-        line = line.rstrip()
-        line = line.split(",")
-        aux = []
-        for k in line:
-            aux.append( float(k) )
-        cti.append(aux)
-
-    ctt = []
-    for line in ctr_targ:
-        line = line.rstrip()
-        line = line.split(",")
-        ctt.append([ float(line[0]), float(line[1]) ])
-
-
-    # Train networks    
-    print"Treinando redes. Goal: 0.001"
-    error = net.train(cti, ctt, epochs=500, show=50, goal=0.001)
-    print "Tam conj de entrada:", len(cti), "Tam conj saida", len(error)
-
-    cvl = []
-    for line in cvl_inp:
-        line = line.rstrip()
-        line = line.split(",")
-        aux = []
-        for k in line:
-            aux.append( float(k) )
-        cvl.append(aux)
-
-    print "Simulando RN"
-    # Simulate networks
-    out = net.sim(cvl)
-    print "Tamanho da entrada:", len(cvl), "Tamanho da saida", len(out)
-
-    o2 = open("o2.data", 'w')
-    for i in out:
-        
-        o2.write(str(int(i[0]))+","+str(int(i[1]))+"\n")
-    o2.close()
-
-    # Plot results
-    pl.subplot(221)
-    pl.plot(error)
-    pl.xlabel('Epoch number')
-    pl.ylabel('error car (default SSE)')
-    pl.show()  
-
-def class_car2():
-    # create neural net with 3 inputs - input range [-0.5, 0.5]
-    # 5 neuronios  para a camada escondida, 1 para a saída
-    # 2 layers including hidden layer and output layer
-    net = nl.net.newff([[0.0, 1.0], [0.0, 1.0],[0.0, 1.0], [0.0, 1.0], [0.0, 1.0], [0.0, 1.0],[0.0, 1.0], [0.0, 1.0], [0.0, 1.0], [0.0, 1.0],[0.0, 1.0], [0.0, 1.0], [-1.0, 1.0],[-1.0, 1.0],[-1.0, 1.0]], [15, 4])
-    print "Neuronios entrada", net.ci
-    print "Neuronios saida", net.co
-    print "Numero camadas escondida+Saida", len(net.layers)
-    print ""
-
-    ctr_inp = open("c2tr_inp.data", 'r')
-    ctr_targ = open("c2tr_targ.data", 'r')
-    cvl_inp = open("c2vl_inp.data", 'r')
-     
+    # listas <- arquivos 
     cti = []
     for line in ctr_inp:
         line = line.rstrip()
@@ -157,12 +107,6 @@ def class_car2():
         line = line.split(",")
         ctt.append([ float(line[0]),float(line[1]),float(line[2]),float(line[3]) ])
 
-
-    # Train networks    
-    print"Treinando redes. Goal: 0.001"
-    error = net.train(cti, ctt, epochs=500, show=50, goal=0.001)
-    print "Tam conj de entrada:", len(cti), "Tam conj saida", len(error)
-
     cvl = []
     for line in cvl_inp:
         line = line.rstrip()
@@ -172,32 +116,101 @@ def class_car2():
             aux.append( float(k) )
         cvl.append(aux)
 
-    print "Simulando RN"    
+    # Train networks    
+    print"\tTreinando redes..."
+    error = net.train(cti, ctt, epochs=500, show=50, goal=0.001)
+    
     # Simulate networks
+    print "\tSimulando Rede Neural "    
     out = net.sim(cvl)
-    print "Tamanho da entrada:", len(cvl), "Tamanho da saida", len(out)
+    
+    # o3 = open('saidas/o3.data', 'w')
+    # for i in out:
+    #     o3.write(str(int(i[0]))+","+str(int(i[1]))+","+str(int(i[2]))+","+str(int(i[3]))+"\n" )
+    # o3.close()
+    # ploteresults(error, "Erro Car3") 
+    ctr_inp.close()
+    ctr_targ.close()
+    cvl_inp.close()
+    return error,  out
 
-    o3 = open('o3.data', 'w')
-    for i in out:
-        o3.write(str(int(i[0]))+","+str(int(i[1]))+","+str(int(i[2]))+","+str(int(i[3]))+"\n" )
-    o3.close()
+def main():
+    inp = sys.argv[1]
+    inp = int(inp)
+    repeticoes = 30
+    erros = []
+    saidas = []
+    listacc = []
+    lporctacc = []
+    erromedio = []
+    errovarnc = []
+    errodsvp = []    
 
-    # Plot results
-    pl.subplot(221)
-    pl.plot(error)
-    pl.xlabel('Epoch number')
-    pl.ylabel('error car 2 (default SSE)')
-    pl.show()  
+    if inp == 1:
 
+        for i in range(0, repeticoes):
+            print "\t", i, "Iteracao"
+            erro, saida = class_ttt()
+            erros.append(erro)
+            saidas.append(saida)
 
-inp = sys.argv[1]
-inp = int(inp)
+        # erromedio = mediaaritm(erros)
+        # errovarnc = variancia( erros, erromedio)
+        # errodsvp = desviopadrao(errovarnc)
+        # diferenças dos valores esperados para o reultado da validacao:
+        listacc, lporctacc = diffsaidasttt(saidas, "ttt/vl_targ.data")  
 
-if inp == 1:
-    class_ttt()
-elif inp == 2:
-    class_car()
-elif inp == 3:
-    class_car2()
-else:
-    print "Você não digitou uma opção válida."
+        # # plotar os graficos com as informações de erro para cada geração
+        # pl.subplot(211)
+        # l1, l3 = pl.plot(erromedio, '-',  errodsvp, '--')
+        # pl.legend((l1,l3), ('Err Medio',  "Desvio Padrao"), loc='upper right', shadow=False)
+        # pl.ylabel("Erros")
+        # pl.xlabel("Epocas (min)")
+        # pl.title('Epocas x  Erros e DesvioP ')        
+
+        # #plotar graficos para variação da saida nas 30 execucoes
+        # pl.subplot(212)
+        # l2,l4 = pl.plot( listacc, 'ro', lporctacc,'g^')
+        # pl.legend( (l2,l4), ("Num acertos", "Porcentagem"), loc='upper right', shadow=False)
+        # pl.ylabel("Acertos")
+        # pl.xlabel("Qtde inputs")
+        # pl.title(" Inputs x Acertos")
+        # pl.axis([-1, repeticoes +10 , -1, len(saidas[0])+20])
+        # pl.show()
+
+    elif inp == 2:
+        for i in range(0, repeticoes):
+            print "\t", i, "Iteracao"
+            erro, saida = class_car3()
+            erros.append(erro)
+            saidas.append(saida)
+
+        # diferenças dos valores esperados para o reultado da validacao:
+        listacc, lporctacc = diffsaidasttt(saidas, "car3/c3vl_.data")  
+
+    else:
+        print "Você não digitou uma opção válida."
+
+    erromedio = mediaaritm(erros)
+    errovarnc = variancia( erros, erromedio)
+    errodsvp = desviopadrao(errovarnc)
+
+    # plotar os graficos com as informações de erro para cada geração
+    pl.subplot(211)
+    l1, l3 = pl.plot(erromedio, '-',  errodsvp, '--')
+    pl.legend((l1,l3), ('Err Medio',  "Desvio Padrao"), loc='upper right', shadow=False)
+    pl.ylabel("Erros")
+    pl.xlabel("Epocas (min)")
+    pl.title('Epocas x  Erros e DesvioP ')        
+
+    #plotar graficos para variação da saida nas 30 execucoes
+    pl.subplot(212)
+    l2,l4 = pl.plot( listacc, 'ro', lporctacc,'g^')
+    pl.legend( (l2,l4), ("Num acertos", "Porcentagem"), loc='upper right', shadow=False)
+    pl.ylabel("Acertos")
+    pl.xlabel("Qtde inputs")
+    pl.title(" Inputs x Acertos")
+    pl.axis([-1, repeticoes +10 , -1, len(saidas[0])+20])
+    pl.show()
+
+main()
