@@ -137,7 +137,7 @@ def class_car3():
 def main():
     inp = sys.argv[1]
     inp = int(inp)
-    repeticoes = 30
+    repeticoes = 5
     erros = []
     saidas = []
     listacc = []
@@ -154,30 +154,8 @@ def main():
             erros.append(erro)
             saidas.append(saida)
 
-        # erromedio = mediaaritm(erros)
-        # errovarnc = variancia( erros, erromedio)
-        # errodsvp = desviopadrao(errovarnc)
         # diferenças dos valores esperados para o reultado da validacao:
         listacc, lporctacc = diffsaidasttt(saidas, "ttt/vl_targ.data")  
-
-        # # plotar os graficos com as informações de erro para cada geração
-        # pl.subplot(211)
-        # l1, l3 = pl.plot(erromedio, '-',  errodsvp, '--')
-        # pl.legend((l1,l3), ('Err Medio',  "Desvio Padrao"), loc='upper right', shadow=False)
-        # pl.ylabel("Erros")
-        # pl.xlabel("Epocas (min)")
-        # pl.title('Epocas x  Erros e DesvioP ')        
-
-        # #plotar graficos para variação da saida nas 30 execucoes
-        # pl.subplot(212)
-        # l2,l4 = pl.plot( listacc, 'ro', lporctacc,'g^')
-        # pl.legend( (l2,l4), ("Num acertos", "Porcentagem"), loc='upper right', shadow=False)
-        # pl.ylabel("Acertos")
-        # pl.xlabel("Qtde inputs")
-        # pl.title(" Inputs x Acertos")
-        # pl.axis([-1, repeticoes +10 , -1, len(saidas[0])+20])
-        # pl.show()
-
     elif inp == 2:
         for i in range(0, repeticoes):
             print "\t", i, "Iteracao"
@@ -186,7 +164,7 @@ def main():
             saidas.append(saida)
 
         # diferenças dos valores esperados para o reultado da validacao:
-        listacc, lporctacc = diffsaidasttt(saidas, "car3/c3vl_.data")  
+        listacc, lporctacc = diffsaidascar(saidas, "car3/c3vl_targ.data")  
 
     else:
         print "Você não digitou uma opção válida."
@@ -212,5 +190,16 @@ def main():
     pl.title(" Inputs x Acertos")
     pl.axis([-1, repeticoes +10 , -1, len(saidas[0])+20])
     pl.show()
+
+    accm = 0 
+    pctgm = 0.0
+    for v in listacc:
+        accm += v
+    accm /= len(listacc)
+    for v in lporctacc:
+        pctgm += v
+    pctgm /= len(lporctacc)
+
+    print "Media de acertos: ", accm, "-", pctgm,"%"
 
 main()

@@ -42,7 +42,7 @@ def desviopadrao( variancia ):
 	dp = []
 	for valor in variancia:
 		dp.append( math.sqrt(valor) )
-		
+
 	return dp
 
 def diffsaidasttt(saidas, target):
@@ -63,6 +63,34 @@ def diffsaidasttt(saidas, target):
 				acertos += 1
 			i += 1
 
+		lisacc.append( acertos )
+		lptacc.append( float(acertos)/float(len(saida)) * 100 )
+
+	target.close()
+	return lisacc, lptacc
+
+def diffsaidascar(saidas, target):
+	target = open(target, 'r')
+	obj = []
+
+	for line in target:
+		line = line.rstrip().split(",")
+		a = []
+		for l in line:
+			a.append(int(l))
+		obj.append(a)
+
+	lisacc = []
+	lptacc = []
+		
+	for saida in saidas:
+		i = 0
+		acertos = 0
+		for l in saida:
+			if int(l[0]) == obj[i][0] and int(l[1]) == obj[i][1] and int(l[2]) == obj[i][2] and int(l[3])==obj[i][3]:	
+				acertos += 1
+			i += 1
+		
 		lisacc.append( acertos )
 		lptacc.append( float(acertos)/float(len(saida)) * 100 )
 
