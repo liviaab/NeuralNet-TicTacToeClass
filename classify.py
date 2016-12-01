@@ -22,6 +22,8 @@ def class_ttt():
     # testar com LogSig, SoftMax - modificar no newff
     net = nl.net.newff([[-0.5, 0.5], [-0.5, 0.5], [-0.5, 0.5],[-0.5, 0.5], [-0.5, 0.5], [-0.5, 0.5],[-0.5, 0.5], [-0.5, 0.5], [-0.5, 0.5]], [9, 1])
 
+    #net.layers[-1].transf = nl.trans.SoftMax()
+
     tr_inp = open("ttt/tr_inp.data", 'r')       # entrada para treino
     tr_targ = open("ttt/tr_targ.data", 'r')     # saída esperada para treino 
     vl_inp = open("ttt/vl_inp.data", 'r')       # entrada para a validacao/generalizacao da rede
