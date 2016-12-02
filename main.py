@@ -7,8 +7,8 @@ def main():
     """
     Parametros:
     Primeiro: escolher qual problema a ser resolvido
-    1 - 'ttt' -> tic-tac-toe
-    2 - 'car' -> classificacao do carro
+    1 - tic-tac-toe
+    2 - classificacao do carro
 
     Segundo:  metodo de treinamento da rede
     0 - original ( para car -> igual a 1 )
@@ -18,7 +18,6 @@ def main():
 
     Terceiro: Taxa de regularizacao
     0 - original/padrao - 0.01
-    1 - 0.1
     2 - 0.5
     3 - 1
 
@@ -33,9 +32,9 @@ def main():
     2 - SoftMax
 
     Sexto:  Inicialização dos pesos
-    0 - original ( sqrt(num neuronios na entrada))
+    0 - original ( sqrt(num neuronios na entrada)) / rand
     1 - 0
-    2 - rand
+    2 - rand / sqrt(in)
 
     Setimo: numero de repeticoes
     livre - recomenda-se 0 < n < 50
@@ -48,7 +47,8 @@ def main():
     lr = int(sys.argv[3])
     num_neur = int(sys.argv[4])
     ftransf = int(sys.argv[5])
-    repeticoes = int(sys.argv[6])
+    pesos = int(sys.argv[6])
+    repeticoes = int(sys.argv[7])
 
     erros = []
     saidas = []
@@ -67,13 +67,13 @@ def main():
 
     print "Parametros escolhidos:"
     if(train == 0):
-        print "Treinamento:\tPadrao - Broyden Fletcher Goldfarb Shanno"
+        print "Treinamento:\t\tPadrao - Broyden Fletcher Goldfarb Shanno"
     elif (train == 1):
-        print "Treinamento:\tgdm - Gradient descent with momentum backpropagation"
+        print "Treinamento:\t\tgdm - Gradient descent with momentum backpropagation"
     elif (train == 2):
-        print "Treinamento:\tgdx - Gradient descent with momentum backpropagation and adaptive lr"
+        print "Treinamento:\t\tgdx - Gradient descent with momentum backpropagation and adaptive lr"
     elif (train == 3):
-        print "Treinamento:\trprop - Resilient Backpropagation"
+        print "Treinamento:\t\trprop - Resilient Backpropagation"
     else:
         train = 0
         print "Algortimo de treinamento padrao."    
@@ -82,10 +82,8 @@ def main():
     if (lr == 0):
         print "Taxa de regularizacao:\tPadrao - 0.0"
     elif (lr == 1):
-        print "Taxa de regularizacao:\t0.1"
-    elif (lr == 2):
         print "Taxa de regularizacao:\t0.5"
-    elif (lr == 3):
+    elif (lr == 2):
         print "Taxa de regularizacao:\t1.0"
     else:
         lr = 0
@@ -114,15 +112,26 @@ def main():
         print "Numero de neuronios padrao."    
 
     #variacao dos pesos
-    if (pesos == 0):
-        print "Inicializacao Peso:\tPadrão - sqrt(in)"
-    elif (pesos == 1):
-        print "Inicializacao Peso:\t0"
-    elif (pesos == 2):
-        print "Inicializacao Peso:\tRand"
+    if(inp == 1):
+        if (pesos == 0):
+            print "Inicializacao Peso:\tPadrão - sqrt(in)"
+        elif (pesos == 1):
+            print "Inicializacao Peso:\t0"
+        elif (pesos == 2):
+            print "Inicializacao Peso:\tRand"
+        else:
+            pesos = 0
+            print "Inicializacao Peso:\tPadrão - sqrt(in)"
     else:
-        pesos = 0
-        print "Inicializacao Peso:\tPadrão - sqrt(in)"
+        if (pesos == 0):
+            print "Inicializacao Peso:\tPadrão - Rand "
+        elif (pesos == 1):
+            print "Inicializacao Peso:\t0"
+        elif (pesos == 2):
+            print "Inicializacao Peso:\tsqrt(in)"
+        else:
+            pesos = 0
+            print "Inicializacao Peso:\tPadrão - sqrt(in)"
 
     print "------------------------------------------------------------"
 
@@ -138,7 +147,7 @@ def main():
 
     elif inp == 2:
         for i in range(0, repeticoes):
-            print "\t", i, "Iteracao"
+            print "\t", i+1, "Iteracao"
             erro, saida = class_car3(train, lr, num_neur, ftransf, pesos)
             erros.append(erro)
             saidas.append(saida)

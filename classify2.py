@@ -88,13 +88,11 @@ def class_ttt(train, lr, num_neur, ftransf, pesos):
     print"\tTreinando redes..."        
     #Taxa de regularizacao:
     if (lr == 0):
-        error = net.train(ti, tt, epochs=1200, show=100, goal=0.001)    
+        error = net.train(ti, tt, epochs=600, show=100, goal=0.001)    
     elif (lr == 1):
-        error = net.train(ti, tt, epochs=1200, show=100, goal=0.001, rr=0.1)    
+        error = net.train(ti, tt, epochs=600, show=100, goal=0.001, rr=0.5)    
     elif (lr == 2):
-        error = net.train(ti, tt, epochs=1200, show=100, goal=0.001, rr=0.5)
-    elif (lr == 3):
-        error = net.train(ti, tt, epochs=1200, show=100, goal=0.001, rr=1.0)
+        error = net.train(ti, tt, epochs=600, show=100, goal=0.001, rr=1.0)
     else:
         pass
     
@@ -109,8 +107,10 @@ def class_ttt(train, lr, num_neur, ftransf, pesos):
 
 def class_car3(train, lr, num_neur, ftransf, pesos):
     # Algortimos de treinamento para teste:
-    if(train == 0 or train == 1):
-        nl.trainf = nl.train.train_gdm #original
+    if(train == 0 ):
+        pass
+    elif (train == 1):
+        nl.trainf = nl.train.train_gdm 
     elif (train == 2):
         nl.trainf = nl.train.train_gdx
     elif (train == 3):
@@ -172,11 +172,11 @@ def class_car3(train, lr, num_neur, ftransf, pesos):
 
     #inicializar pesos
     if (pesos == 0):
-        net.layers[0].np['w'][:]= math.sqrt( net.ci )
+        pass
     elif (pesos == 1):
         net.layers[0].np['w'][:]= 0
     elif (pesos == 2):
-        pass
+        net.layers[0].np['w'][:]= math.sqrt( net.ci )
     else: 
         pass
 
@@ -192,16 +192,15 @@ def class_car3(train, lr, num_neur, ftransf, pesos):
 
     # Train networks    
     print"\tTreinando redes..."
-    error = net.train(, ctt, epochs=500, show=50, goal=0.001)
     #Taxa de regularizacao:
     if (lr == 0):
-        error = net.train(cti, ctt, epochs=1200, show=100, goal=0.001)    
+        error = net.train(cti, ctt, epochs=600, show=50, goal=0.001)    
     elif (lr == 1):
-        error = net.train(cti, ctt, epochs=1200, show=100, goal=0.001, rr=0.1)    
+        error = net.train(cti, ctt, epochs=600, show=50, goal=0.001, rr=0.1)    
     elif (lr == 2):
-        error = net.train(cti, ctt, epochs=1200, show=100, goal=0.001, rr=0.5)
+        error = net.train(cti, ctt, epochs=600, show=50, goal=0.001, rr=0.5)
     elif (lr == 3):
-        error = net.train(cti, ctt, epochs=1200, show=100, goal=0.001, rr=1.0)
+        error = net.train(cti, ctt, epochs=600, show=50, goal=0.001, rr=1.0)
     else:
         pass
     
